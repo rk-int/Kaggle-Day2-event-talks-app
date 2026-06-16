@@ -767,3 +767,189 @@ body {
 .state-empty svg {
     color: var(--accent-primary);
 }
+
+/* Theme Toggle Button & SVG Styles */
+.btn-icon-only {
+    padding: 0.75rem;
+    aspect-ratio: 1;
+}
+
+body.light-theme .icon-sun {
+    display: none !important;
+}
+body.light-theme .icon-moon {
+    display: inline-block !important;
+}
+body:not(.light-theme) .icon-sun {
+    display: inline-block !important;
+}
+body:not(.light-theme) .icon-moon {
+    display: none !important;
+}
+
+/* Card Actions Alignment */
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 0.75rem;
+}
+
+body.light-theme .card-actions {
+    border-top-color: rgba(15, 23, 42, 0.04);
+}
+
+/* Copy to Clipboard Button styling */
+.copy-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition-smooth);
+}
+
+.copy-btn svg {
+    color: currentColor;
+    width: 14px;
+    height: 14px;
+    transition: var(--transition-smooth);
+}
+
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.copy-btn.copied {
+    background: rgba(16, 185, 129, 0.15) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    color: #10b981 !important;
+}
+
+body.light-theme .copy-btn {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .copy-btn:hover {
+    background: rgba(15, 23, 42, 0.08);
+}
+
+/* Light Theme Variable Overrides */
+body.light-theme {
+    --bg-dark: #f8fafc;
+    --bg-card: rgba(255, 255, 255, 0.75);
+    --bg-card-hover: rgba(241, 245, 249, 0.85);
+    --border-color: rgba(15, 23, 42, 0.08);
+    --border-hover: rgba(15, 23, 42, 0.18);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    
+    --accent-primary: #2563eb;
+    --accent-glow: rgba(37, 99, 235, 0.08);
+    
+    --color-feature: #059669;
+    --glow-feature: rgba(5, 150, 105, 0.08);
+    
+    --color-issue: #e11d48;
+    --glow-issue: rgba(225, 29, 72, 0.08);
+    
+    --color-changed: #d97706;
+    --glow-changed: rgba(217, 119, 6, 0.08);
+    
+    --color-deprecated: #dc2626;
+    --glow-deprecated: rgba(220, 38, 38, 0.08);
+    
+    --color-general: #7c3aed;
+    --glow-general: rgba(124, 58, 237, 0.08);
+    
+    background-image: 
+        radial-gradient(at 10% 20%, rgba(124, 58, 237, 0.04) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(5, 150, 105, 0.03) 0px, transparent 50%);
+}
+
+body.light-theme .card-body code {
+    background: rgba(15, 23, 42, 0.05);
+    border-color: rgba(15, 23, 42, 0.1);
+    color: #1e293b;
+}
+
+body.light-theme .tweet-btn {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .tweet-btn:hover {
+    background: #0f172a;
+    color: white;
+    border-color: #0f172a;
+}
+
+body.light-theme .tweet-btn:hover svg {
+    fill: white;
+}
+
+body.light-theme .modal-card {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.15);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15), 0 0 40px rgba(37, 99, 235, 0.05);
+}
+
+body.light-theme .modal-title svg {
+    fill: var(--accent-primary);
+}
+
+body.light-theme .tweet-textarea-wrapper {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .tweet-textarea-wrapper:focus-within {
+    border-color: var(--accent-primary);
+}
+
+body.light-theme .tweet-counter-row {
+    border-top-color: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .modal-close:hover {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+body.light-theme .search-input {
+    background: rgba(15, 23, 42, 0.03);
+    border-color: rgba(15, 23, 42, 0.12);
+}
+
+body.light-theme .search-input:focus {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.light-theme .filter-chip:hover {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .filter-chip.active {
+    background: rgba(37, 99, 235, 0.10);
+    border-color: rgba(37, 99, 235, 0.2);
+    color: #1d4ed8;
+}
+
+body.light-theme .filter-chip.active .chip-count {
+    background: rgba(37, 99, 235, 0.2);
+    color: #1d4ed8;
+}
+
+body.light-theme .chip-count {
+    background: rgba(15, 23, 42, 0.06);
+}

@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const filterChips = document.querySelectorAll('.filter-chip');
     const resultsCount = document.getElementById('results-count');
+    const themeToggle = document.getElementById('theme-toggle');
+    const exportBtn = document.getElementById('export-btn');
     
     // Modal DOM Elements
     const tweetModal = document.getElementById('tweet-modal');
@@ -24,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const RELEASE_NOTES_URL = "https://cloud.google.com/bigquery/docs/release-notes";
     
     // Initialize
+    initTheme();
     fetchReleases();
     
     // Event Listeners
@@ -231,6 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${update.content_html}
                     </div>
                     <div class="card-actions">
+                        <button class="copy-btn" data-index="${allUpdates.indexOf(update)}" title="Copy summary to clipboard">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span>Copy</span>
+                        </button>
                         <button class="tweet-btn" data-index="${allUpdates.indexOf(update)}">
                             <svg viewBox="0 0 24 24">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -249,6 +259,26 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (e) => {
                 const idx = parseInt(btn.getAttribute('data-index'), 10);
                 openTweetModal(allUpdates[idx]);
+            });
+        });
+
+        // Attach click handlers to copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.getAttribute('data-index'), 10);
+                const update = allUpdates[idx];
+                navigator.clipboard.writeText(update.text_summary).then(() => {
+                    btn.classList.add('copied');
+                    const textSpan = btn.querySelector('span');
+                    const originalText = textSpan.textContent;
+                    textSpan.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        textSpan.textContent = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                });
             });
         });
     }
@@ -330,5 +360,65 @@ document.addEventListener('DOMContentLoaded', () => {
             "'": '&#039;'
         };
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Theme Switcher Logic
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        } else {
+            document.body.classList.remove('light-theme');
+        }
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        const theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        localStorage.setItem('theme', theme);
+    }
+
+    // Export Currently Filtered Updates to CSV
+    function exportToCSV() {
+        if (allUpdates.length === 0) return;
+
+        // Apply current filters
+        const filtered = allUpdates.filter(update => {
+            const matchesType = activeFilter === 'all' || update.type.toLowerCase() === activeFilter;
+            const matchesSearch = !searchQuery || 
+                update.text_summary.toLowerCase().includes(searchQuery) ||
+                update.type.toLowerCase().includes(searchQuery) ||
+                update.date.toLowerCase().includes(searchQuery);
+            return matchesType && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+            alert('No data matches the current filters to export.');
+            return;
+        }
+
+        const csvRows = [];
+        // Header Row
+        csvRows.push(['Date', 'Category', 'Update Content'].map(h => `"${h}"`).join(','));
+
+        // Data Rows
+        filtered.forEach(item => {
+            const dateVal = item.date.replace(/"/g, '""');
+            const typeVal = item.type.replace(/"/g, '""');
+            const summaryVal = item.text_summary.replace(/"/g, '""');
+            csvRows.push(`"${dateVal}","${typeVal}","${summaryVal}"`);
+        });
+
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `BigQuery_Release_Notes_${activeFilter}_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 });
